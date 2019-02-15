@@ -6,9 +6,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const Fielbus = require('./fieldBus');
+const {Controller} = require('ethernet-ip');
 const indexRouter = require('./routes/index');
-var io = require('socket.io');
-
 // Add real time socket functionality
 //allow cross origin requests
 var cors = require('cors');
@@ -30,13 +30,10 @@ const { spawn } = require('child_process');
 var app = express();
 
 
-
-
 /* Socket IO functionality */
 // io.on("connection", function( socket ) {
 //   console.log("A user connected");
 // });
-
 
 
 // //TODO encapsulate the spawning of a child process
@@ -83,5 +80,34 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+//
+// PLC.forEach((tag) =>
+// {
+//   tag.on("Changed", (tag) => {
+//     let latestTagValue = parseFloat(Math.round(tag.value*100)/100).toFixed(2);
+//     console.log(`tag.value changed to ${tag.value}\n`);
+//     console.log(`latestTagValue changed to ${latestTagValue}\n`);
+//   });
+// });
+
+
+
+process.stdin.resume();//so the program will not close instantly
+
+function exitHandler(options, exitCode){
+  if (options.cleanup) console.log('clean');
+  if (exitCode || exitCode === 0) console.log(exitCode);
+  if (options.exit) process.exit();
+};
+
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+
+
 
 module.exports = app;

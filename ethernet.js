@@ -1,5 +1,5 @@
-const { Tag} = require('ethernet-ip');
 
+const { Tag} = require('ethernet-ip');
 
 module.exports = function(PLC) {
     //step 1 : Import ethernet Ip module
@@ -18,9 +18,11 @@ module.exports = function(PLC) {
         // Set Scan Rate of Subscription Group to 50 ms (defaults to 200 ms)
         PLC.scan_rate = 1000;
         PLC.scan();
-
     });
 };
+
+
+
 
 //step 1 : Import ethernet Ip module
 //step 2: instantiate new controller object
