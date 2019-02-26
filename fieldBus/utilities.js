@@ -17,11 +17,17 @@ const updateTags = (tag) => {
     });
 };
 
-const parseTag = (tag) => {
-    return {
-        name: tag.name,
-        value: parseFloat(Math.round(tag.value*100)/100).toFixed(2)
-    };
+const parseTag = (tagVal) => {
+    return parseFloat(Math.round(tagVal*10)/10).toFixed(2)
+
 };
+
+
+
+const ParseNames = (obj) => {
+
+};
+
+
 
 module.exports = {logTags, updateTags, parseTag};

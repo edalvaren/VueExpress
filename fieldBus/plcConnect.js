@@ -1,14 +1,11 @@
 
-const logger = require('morgan');
 const {Tag} = require('ethernet-ip');
 const settings = require('./constants');
 
 const ipAddress = settings.IPAddresses.StructureSupported;
 const scanRate = settings.ScanRate;
-
-const {AllTags} = require('./TagNames');
-const {getArrayValues, getTagName} = require('../helpers/arrayFunctions');
-
+const {AllTags_Names} = require('./TagNames');
+const winston = require ('../config/winston');
 
 /**
  *  Main function in this module.
@@ -18,33 +15,32 @@ const {getArrayValues, getTagName} = require('../helpers/arrayFunctions');
  *       4. Log PLC Name
  */
 
-//1)  Extract the values of the Object Array
-const AllTags_Values = getArrayValues(AllTags);
-//2) Extract tag names of the values array
-const AllTags_Names = AllTags_Values.map(getTagName);
+
 
 
 
 const InitializePLC = (PLC) => {
     try {
         SubscribeToTags(AllTags_Names, PLC);
-
-        console.log("It worked!! /n");
-
+        winston.info(`Subscribed to ${AllTags_Names.length} tags`)
     }
     catch (e) {
-        console.log(`Caught Error when trying to subscribe to Tags. Error is ${e.message}It did not work /n)`);
+        winston.error("Subscribing to tags failed");
     }
     
     //default scan rate is 200ms. I assigned a scan rate of 1000ms
     PLC.connect(ipAddress, 0).then(() => {
         PLC.scan_rate = scanRate;
         const {name} = PLC.properties;
-        console.log(`\n\nConnected to PLC ${name}...\n`);
-        PLC.scan();
-    });
-
-
+        winston.info(`\n\nConnected to PLC ${name}...\n`);
+        PLC.scan()
+            .catch((error) => {
+                winston.error("There was a connection error. The error was caught though.. that's a good thing.. " + error.message)
+            });
+    })
+        .catch((error) => {
+            winston.error("There was an error while connecting to the PLC. The error says " + error.message);
+        });
 };
 
 
@@ -53,15 +49,13 @@ const SubscribeToTags = (tags, PLC) => {
     return new Promise((resolve, reject) => {
         tags.map(tag => {
             PLC.subscribe(new Tag(tag.toString()))
-            console.log(`subscribing to ${tag}`);
         })
     })
 };
 
 
 
-
 module.exports = {
-  InitializePLC
+  InitializePLC,
 };
 

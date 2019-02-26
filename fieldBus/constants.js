@@ -6,7 +6,7 @@ const IPAddresses = {
     MicroLogixFreezer: "172.16.30.40"
 };
 
-const ScanRate = 1000;
+const ScanRate = 500;
 const DrumPrefix = "Spiral_Drum.";
 const TUPrefix = "Spiral_Takeup.";
 const TensionControlPrefix = "HMI.Tension_Control.";
