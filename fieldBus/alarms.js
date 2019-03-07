@@ -4,10 +4,12 @@ import {REAL, DINT, BOOL} from './TagNames'
 const alarmTagName = "FAULT.Alarm_Register";
 const resetAlarmTagName = "HMI.Fault_Reset_Main";
 
+const AlarmObj = require('../models/alarm');
+const {getArrayValues, getTagName} = require('../helpers/arrayFunctions');
 
 const logAlarm = (alarm) => {
-    console.log(`THE ALARM VALUE IS _________________ ${alarm}`);
-}
+    console.log(`THE ALARM VALUE IS __ ${alarm}`);
+};
 
 // const readAlarm = async function readAlarm(PLC, tagName, callback) {
 //     let readableTag = new Tag(tagName, null, DINT);
@@ -16,7 +18,7 @@ const logAlarm = (alarm) => {
 
 // }
 
-
+const alarmEthTag = new Tag(alarmTagName, null, DINT);
 
 
 const Alarms = [
@@ -28,9 +30,26 @@ const Alarms = [
     ];
 
 
+const createAlarm = (arr) => {
+   return new AlarmObj(arr.AlarmNumber, arr.AlarmName, false);
+};
+
+const clearAlarms = (obj) => {
+   obj.AlarmStatus = false;
+   obj.TimeStamp = null;
+};
+
+const AllAlarm_Values = getArrayValues(Alarms);
+
+const AlarmObjArr = AllAlarm_Values.map(createAlarm);
+
+
+
+
+
 const findAlarm = (alarmValue) => {
     if (newAlarm === null) {
-        console.log("The alarm was undefined")
+        console.log("The alarm was undefined");
         return
     }
     logAlarm(alarmValue);
@@ -41,16 +60,7 @@ const findAlarm = (alarmValue) => {
     return Alarms.find(o => o.AlarmNumber === alarmValue);
 };
 
-// const readAlarm = (PLC, tagName, callback) => {
-//     let readableTag = new Tag(tagName, null, DINT);
-//     return new Promise((resolve, reject) => {
-//         PLC.readTag(readableTag);
-//         resolve(readableTag.value);
-//     })
-// }
 
-
-var message = "";
 const readAlarm = (PLC, tagName) => {
     let readableTag = new Tag(tagName, null, DINT);
     return new Promise(function(resolve, reject){
@@ -60,14 +70,17 @@ const readAlarm = (PLC, tagName) => {
             console.log(err.message);
         });
     })
-}
+};
 
 
 module.exports = {
    Alarms,
     findAlarm,
     readAlarm,
+    clearAlarms,
     alarmTagName,
+    AlarmObjArr,
+    alarmEthTag,
     logAlarm,
     resetAlarmTagName
 };

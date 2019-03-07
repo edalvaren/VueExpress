@@ -42,22 +42,6 @@ PlcTag.prototype.fill = function (newFields) {
   }
 };
 
-// PlcTag.findById = function (id, callback) {
-//     db.get('users', {id: id}).run(function (err, data) {
-//         if (err) return callback(err);
-//         callback(null, new PlcTag(data));
-//     });
-// }
-
 
 module.exports = PlcTag;
 
-// const Tags = function (data) {
-//   this.data = data;
-// };
-//
-// Tags.prototype.data = {};
-//
-// Tags.prototype.changeName = function (name) {
-//     this.data.name = name;
-// };

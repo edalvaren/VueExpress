@@ -28,7 +28,7 @@
 
 const {InitializePLC, readAllTagsOnce, groupTags} = require('./plcConnect');
 const {hmiUpdateRate} = require('./constants');
-const { findAlarm, readAlarm, alarmTagName, resetAlarmTagName} = require('./alarms');
+const { findAlarm, readAlarm, alarmTagName, resetAlarmTagName, AlarmObjArr, alarmEthTag, clearAlarms} = require('./alarms');
 const {TagObjArray} = require('./TagNames');
 const {parseTag} = require('./utilities');
 const {WriteToReal, WriteToDint, WriteBoolFalse, WriteBoolTrue, ToggleBit} = require('./plcWritingToTags');
@@ -40,7 +40,7 @@ const fieldBus = (Compact) => {
 
 module.exports = {
   fieldBus, readAllTagsOnce, groupTags, hmiUpdateRate,
-    findAlarm, readAlarm, alarmTagName, resetAlarmTagName,
+    findAlarm, readAlarm, alarmTagName, resetAlarmTagName, AlarmObjArr, alarmEthTag, clearAlarms,
     TagObjArray, parseTag,
     WriteToReal, WriteToDint, WriteBoolFalse, WriteBoolTrue, ToggleBit
 };
