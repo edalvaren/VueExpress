@@ -15,7 +15,7 @@ const sassMiddleware = require('./middleware/sass-middleware');
 //allow cross origin requests
 const cors = require('cors');
 const corsOptions = {
-  "origin": ["http://localhost:8081", "http://192.168.128.33:8081"],
+  "origin": ["http://localhost:8081", "http://192.168.128.33:8081", "http://172.16.17.55:8080"],
   "allowedHeaders": "Content-Type,Authorization",
   "credentials": false,
   "optionsSuccessStatus": 204
