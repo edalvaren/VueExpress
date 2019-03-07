@@ -26,10 +26,15 @@
  **/
 
 
-const {InitializePLC} = require('./plcConnect');
+const {InitializePLC, readAllTagsOnce, groupTags} = require('./plcConnect');
 
-module.exports = function FieldBus(Compact){
-    InitializePLC(Compact);
+const fieldBus = (Compact) => {
+   InitializePLC(Compact);
+};
+
+
+module.exports = {
+  fieldBus, readAllTagsOnce, groupTags
 };
 
 

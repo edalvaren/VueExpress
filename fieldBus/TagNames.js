@@ -36,6 +36,7 @@ const AllTags = {
     SpeedMode: {name: TCS.concat("Speed_Mode"), dataType: BOOL},
     TuReady: {name: TU.concat("VFD_Feedback_Ready"), dataType: BOOL},
     TuStatus: {name: TU.concat("Status"), dataType: DINT} ,
+    // TuSpeed: { name: TU.concat("takeup_entry_status"), dataType: DINT },
     TuSpeed: {name: TU.concat("VFD_Feedback_Frequency"), dataType: REAL},
     TuCurrent: {name: TU.concat("VFD_Feedback_Current"), dataType: REAL},
     StartSpiral: {name: "HMI.Start", dataType: BOOL},
@@ -45,7 +46,9 @@ const AllTags = {
     AudibleAlarmDisable: {name: "Alarm_Disable", dataType: BOOL},
     SpiralFrequencySp: {name: "HMI_Frequency_Setting", dataType: DINT},
     TuTorque: {name: 'HMI.Tension_Control.Output_Torque', dataType: REAL},
-    Alarm_Register: {name: 'FAULT.Alarm_Register', datatype: DINT}
+    Alarm_Register: {name: 'FAULT.Alarm_Register', datatype: DINT},
+    CounterAcc: { name: 'new_counter.acc', datatype: DINT }
+
 
 };
 

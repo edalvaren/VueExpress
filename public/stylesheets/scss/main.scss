@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+
+$app-background-color: #173F5F;
+$app-text-color-1: #FFFFF;
+$app-text-color-2: #900C3F;
+
+
+$app-font-size-body: 18px;
+$app-font-size-headings: 32px;
+
+$app-font-family: 'Roboto', sans-serif;
+
+
+.page-title {
+  font-family: $app-font-family;
+  font-size: $app-font-size-headings;
+}
+
+.page-content {
+  font-family: $app-font-family;
+  font-size: $app-font-size-body;
+  background-color: $app-background-color;
+}
