@@ -7,14 +7,18 @@ const IPAddresses = {
 };
 
 const ScanRate = 1000;
+const hmiUpdateRate = 1000;
+
 const DrumPrefix = "Spiral_Drum.";
 const TUPrefix = "Spiral_Takeup.";
 const TensionControlPrefix = "HMI.Tension_Control.";
+
 
 module.exports = {
    IPAddresses,
    ScanRate,
     DrumPrefix,
     TUPrefix,
-    TensionControlPrefix
+    TensionControlPrefix,
+    hmiUpdateRate
 };

@@ -1,27 +1,31 @@
 
 /** Socket IO API for real time communication **/
-
 const socket_io = require('socket.io');
 const io = socket_io();
 const socketApi = {};
-const {fieldBus, readAllTagsOnce, groupTags} = require('../fieldBus');
-const {parseTag} = require('../fieldBus/utilities');
-const {TagObjArray, AllTags_Names} = require('../fieldBus/TagNames');
+
+// All functions and constants found in our "FieldBus" module
+const {fieldBus, hmiUpdateRate,
+    findAlarm, readAlarm,
+    TagObjArray, parseTag,
+    WriteToReal, WriteToDint, WriteBoolFalse, WriteBoolTrue, ToggleBit} = require('../fieldBus');
+
+
 const PlcTag = require('../models/plcTag');
-const {WriteToReal, WriteToDint, WriteBoolFalse, WriteBoolTrue, ToggleBit} = require('../fieldBus/plcWritingToTags');
+
+// Configuration for winston logger
 const winston = require('../config/winston');
-const { findAlarm, readAlarm, alarmTagName, resetAlarmTagName} = require('../fieldBus/alarms');
 socketApi.io = io;
 
 const {Controller, TagGroup} = require('ethernet-ip');
 
-var copyonce = true;
 
-while (copyonce){
+// We will start by sending all tags with a default value. To do so we just copy the Tag object array
+var initialTagCopy = true;
+while (initialTagCopy){
     var shallowCopy = TagObjArray.slice();
-    copyonce = false;
+    initialTagCopy = false;
 }
-
 
 var activeAlarms = [];
 
@@ -32,10 +36,6 @@ io.on('connection', function (socket) {
     const tagGroup = new TagGroup();
 
     fieldBus(PLC);
-
-
-
-
 
 
     socketApi.sendTagValue = function(tags) {
@@ -55,13 +55,10 @@ io.on('connection', function (socket) {
     };
 
 
+    // Every second the tag array
     const updateTagArray = setInterval(function () {
         socketApi.sendTagValue(shallowCopy);
-    }, 1000);
-
-
-
-
+    }, hmiUpdateRate);
 
     /**
      * Reading all tags to which we subscribed. This read uses the scan() method.
@@ -74,23 +71,20 @@ io.on('connection', function (socket) {
                 shallowCopy[index] = new PlcTag(tag.name, null, parseTag(tag.value));
             }
         });
+        // When the "Changed" event is fired by any tag we are subscribed to in the PLC
         tag.on("Changed", (tag, oldValue) => {
-            // if(!(tag.value === "Nan")){
-            // } else {
+            // make sure the value is not empty
+            if(!(tag.value === "Nan")){
+            } else {
+                // Find the tag that changed in our tag array by the tag Name property.
                 let newTag = shallowCopy.find(o => o.name === tag.name);
-
-                // winston.info(newTag);
                 let index = shallowCopy.indexOf(newTag);
                 if (index !== -1) {
+                    // if the tag exists, we create a new PLC tag and replace the existing tag at that array position
                     let addedTag = new PlcTag(tag.name, null, parseTag(tag.value));
-                    // winston.info(` The tag is ${addedTag.name} with a value of ${addedTag.value}\n`)
                     shallowCopy.splice(index, 1, addedTag);
-                    winston.info(`The shallow copy array at position ${index} is now ${shallowCopy[index].value}`)
-                    // shallowCopy.splice(index, 0, addedTag);
                 }
-
-                // socketApi.sendTagValue(parseTag(tag));
-
+            }
             // if (tag.name === alarmTagName) {
             //     // if the alarm is not already active
             //     if (activeAlarms.indexOf(tag.value) === -1){
@@ -109,6 +103,18 @@ io.on('connection', function (socket) {
         // updateTags(tag);
     });
 
+    /**
+     * SOCKET EVENT LISTENERS/HANDLERS
+     * EVENTS:
+     *   - READ_ALARMS  - Client started event requesting an updated alarm state.
+     *     CLEAR_ALARMS - Clear alarm array and toggle reset bit.
+     *     TOGGLE_START - Toggles the start button. Maintained in an ON State for 3 seconds
+     *     TOGGLE_STOP  - Toggles the stop button. Maintained in an ON state for 3 seconds.
+     *     CHANGE_SPEED - Update the value of the speed tag
+     *     CHANGE_TORQUE - Update the value of the torque tag
+     *     ERROR - Handles for a socket error
+     *     DISCONNECTING - Logs reason for socket disconnection and stops sending the tag array via socket.
+     */
 
     socket.on('READ_ALARMS', function () {
         winston.info('Reading Alarms');
@@ -162,18 +168,6 @@ io.on('connection', function (socket) {
     });
 
 
-    socket.on('SEND_MESSAGE', function (data) {
-        winston.info(` The message is ${JSON.stringify(data)}\n`);
-        if(!data){
-            winston.warn("You must specify tag name");
-        } else {
-            let newTag = TagObjArray.find(o => o.name === data);
-            winston.info(newTag);
-            WriteToDint(PLC, data, 20);
-        }
-    });
-
-
     socket.on('error', (error) => {
        winston.error("There was an error. The error says: " + error.message)
     });
@@ -183,10 +177,5 @@ io.on('connection', function (socket) {
         clearInterval(updateTagArray);
     });
 });
-
-
-
-
-
 
 module.exports = socketApi;
