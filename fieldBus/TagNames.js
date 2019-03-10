@@ -47,8 +47,8 @@ const AllTags = {
     SpiralFrequencySp: {name: "HMI_Frequency_Setting", dataType: DINT},
     TuTorque: {name: 'HMI.Tension_Control.Output_Torque', dataType: REAL},
     Alarm_Register: {name: 'FAULT.Alarm_Register', datatype: DINT},
-    CounterAcc: { name: 'new_counter.acc', datatype: DINT }
-
+    CounterAcc: { name: 'new_counter.acc', datatype: DINT },
+    RunBit: {name: 'HMI_Spiral_Run', datatype: BOOL}
 
 };
 

@@ -30,9 +30,7 @@ while (initialTagCopy){
 
 var activeAlarms = [];
 
-function replaceArrayElement(element, index, array) {
 
-}
 
 io.on('connection', function (socket) {
     winston.info(`Socket with ID ${socket.id} connected`);
@@ -54,7 +52,7 @@ io.on('connection', function (socket) {
         addedAlarm.setAlarmTime(new Date());
         alarmShallowCopy.splice(index, 1, addedAlarm);
         } else {
-            console.log(`there are no alarms!\n`);
+            // console.log(`there are no alarms!\n`);
             return
         }
         winston.info(`Found new alarm with name ${newAlarm.AlarmName}... with value: ${newAlarm.AlarmNumber}\n`);
@@ -68,7 +66,7 @@ io.on('connection', function (socket) {
 
     socketApi.sendAlarm = function(msg) {
        io.sockets.emit('ALARM', msg);
-        // winston.warn(msg);
+        winston.warn(msg);
     };
 
     socketApi.sendActiveAlarm = function(msg){
@@ -141,8 +139,8 @@ io.on('connection', function (socket) {
     socket.on('CLEAR_ALARMS', function () {
         winston.info(`Cleared all active alarms}`)
         ToggleBit(resetAlarmTagName, PLC);
-        shallowCopy.forEach(function(item){
-            let index = shallowCopy.indexOf(item);
+        alarmShallowCopy.forEach(function(item){
+            let index = alarmShallowCopy.indexOf(item);
             let clearedAlarm = new AlarmObj(item.AlarmNumber, item.AlarmName, false, null);
             alarmShallowCopy.splice(index, 1, clearedAlarm);
         })
