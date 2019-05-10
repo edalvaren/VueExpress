@@ -2,6 +2,7 @@
 const {Controller} = require('ethernet-ip');
 const socketApi = require('./socketApi');
 const {FieldBus} = require('../fieldBus');
+
 io = socketApi.io;
 
 

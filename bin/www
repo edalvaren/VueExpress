@@ -7,12 +7,15 @@
 var app = require('../app');
 var debug = require('debug')('vueexpress:server');
 var http = require('http');
-
+const dotenv = require('dotenv');
+const winston = require('../config/winston');
+const isReachable = require('is-reachable');
+dotenv.config();
 /**
  * Get port from environment and index in Express.
  */
 
-var port = normalizePort(process.env.PORT || '5000');
+var port = normalizePort(process.env.NODE_PORT || '8080');
 app.set('port', port);
 
 /**
@@ -30,13 +33,46 @@ console.log(`server running on port ${port}`);
 server.on('error', onError);
 server.on('listening', onListening);
 
-/* TODO REMEMBER TO UNCOMMENT THIS TO GO TO PREVIOUS SOCKET.IO CONFIGURATION */
-// const io = require('socket.io').listen(server);
-// require('../sockets/base')(io);
-
+/**
+ *  Socket IO for real time communication with the client
+ */
 var socketApi = require('../sockets/socketApi');
 var io = socketApi.io;
-io.attach(server);
+
+
+/**
+ * Check for connectivity to the PLC IP Address
+ * Function checkConnection returns a boolean
+ */
+const machineIp = process.env.NODE_MACHINE_IP;
+// const checkConnection = async () => {
+//   return await isReachable(machineIp)
+// };
+
+const checkConnection = setInterval(async () => {
+  let isConnected = await isReachable(machineIp);
+  checkConnCb(isConnected)
+}, 3000);
+
+var connectionStatus = false;
+
+const checkConnCb = (isConnected) => {
+    if (connectionStatus && isConnected){
+
+    }
+    else if (!connectionStatus && isConnected) {
+      io.attach(server);
+      connectionStatus = true;
+      winston.info("Reattaching socket_IO() to server");
+    } else if (connectionStatus && !isConnected) {
+      io.close();
+      winston.info("You lost connection to the PLC network so the socket is closing")
+      connectionStatus = false;
+    } else {
+
+    }
+};
+
 
 
 /**

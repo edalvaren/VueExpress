@@ -10,12 +10,11 @@ const _ = require('lodash');
 const morgan = require('morgan');
 
 const winston = require('./config/winston');
-const sassMiddleware = require('./middleware/sass-middleware');
 // Add real time socket functionality
 //allow cross origin requests
 const cors = require('cors');
 const corsOptions = {
-  "origin": ["http://localhost:8081", "http://192.168.128.33:8081", "http://172.16.17.55:8080"],
+  "origin": ["http://localhost:8081", "http://192.168.128.33:8081", "http://localhost:8083", "http://172.16.17.55:8080"],
   "allowedHeaders": "Content-Type,Authorization",
   "credentials": false,
   "optionsSuccessStatus": 204
@@ -58,7 +57,6 @@ app.set('view engine', 'pug');
 /* APP USE */
 
 
-app.use(sassMiddleware);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

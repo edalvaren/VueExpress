@@ -3,6 +3,8 @@
 const socket_io = require('socket.io');
 const io = socket_io();
 const socketApi = {};
+// Detect real time connectivity
+
 
 // All functions and constants found in our "FieldBus" module
 const {fieldBus, hmiUpdateRate,
@@ -34,29 +36,29 @@ var activeAlarms = [];
 
 io.on('connection', function (socket) {
     winston.info(`Socket with ID ${socket.id} connected`);
+
     const PLC = new Controller();
-    const tagGroup = new TagGroup();
 
     fieldBus(PLC);
 
-    const readAlarmTag = setInterval(async function () {
-        await PLC.readTag(alarmEthTag);
-    }, 1500);
-
-    const logReadAlarm = setInterval( function () {
-        // if (alarmEthTag.value != 0) {
-        let newAlarm = alarmShallowCopy.find(o => o.AlarmNumber === alarmEthTag.value);
-        if (typeof newAlarm !== 'undefined' ){
-        let index = alarmShallowCopy.indexOf(newAlarm);
-        let addedAlarm = new AlarmObj(newAlarm.AlarmNumber, newAlarm.AlarmName, true);
-        addedAlarm.setAlarmTime(new Date());
-        alarmShallowCopy.splice(index, 1, addedAlarm);
-        } else {
-            // console.log(`there are no alarms!\n`);
-            return
-        }
-        winston.info(`Found new alarm with name ${newAlarm.AlarmName}... with value: ${newAlarm.AlarmNumber}\n`);
-    }, 2000);
+    // const readAlarmTag = setInterval(async function () {
+    //     await PLC.readTag(alarmEthTag);
+    // }, 1500);
+    //
+    // const logReadAlarm = setInterval( function () {
+    //     // if (alarmEthTag.value != 0) {
+    //     let newAlarm = alarmShallowCopy.find(o => o.AlarmNumber === alarmEthTag.value);
+    //     if (typeof newAlarm !== 'undefined' ){
+    //     let index = alarmShallowCopy.indexOf(newAlarm);
+    //     let addedAlarm = new AlarmObj(newAlarm.AlarmNumber, newAlarm.AlarmName, true);
+    //     addedAlarm.setAlarmTime(new Date());
+    //     alarmShallowCopy.splice(index, 1, addedAlarm);
+    //     } else {
+    //         // console.log(`there are no alarms!\n`);
+    //         return
+    //     }
+    //     //(`Found new alarm with name ${newAlarm.AlarmName}... with value: ${newAlarm.AlarmNumber}\n`);
+    // }, 2000);
 
 
     socketApi.sendTagValue = function(tags) {
@@ -66,7 +68,6 @@ io.on('connection', function (socket) {
 
     socketApi.sendAlarm = function(msg) {
        io.sockets.emit('ALARM', msg);
-        winston.warn(msg);
     };
 
     socketApi.sendActiveAlarm = function(msg){
@@ -137,7 +138,7 @@ io.on('connection', function (socket) {
         })
     });
     socket.on('CLEAR_ALARMS', function () {
-        winston.info(`Cleared all active alarms}`)
+        winston.info(`Cleared all active alarms}`);
         ToggleBit(resetAlarmTagName, PLC);
         alarmShallowCopy.forEach(function(item){
             let index = alarmShallowCopy.indexOf(item);
@@ -155,7 +156,7 @@ io.on('connection', function (socket) {
             .catch(function (error) {
                 winston.warn(`couldn't write to the stop tag because there was an ${error.message}`)
             });
-        setTimeout(WriteBoolFalse, 3000, PLC, "HMI.Stop" );
+        setTimeout(WriteBoolFalse, 2000, PLC, "HMI.Stop" );
     });
     socket.on('TOGGLE_BIT', function (tagName){
         winston.info(`The ${data} button was pressed..hurray! `);
@@ -174,6 +175,25 @@ io.on('connection', function (socket) {
         try {
             WriteToReal(PLC, "HMI.Tension_Control.Torque_Setpoint", value);
         } catch (error) {
+            winston.error(error.message);
+        }
+    });
+
+    socket.on('CHANGE_SETTING_REAL', (tagValue, tagName) => {
+        try {
+            console.log("The tag value is : " + tagValue.toString());
+            console.log(`The tag name is ${tagName.toString()}`);
+            WriteToReal(PLC, tagName.toString(), tagValue);
+        } catch (error){
+            winston.error(error.message);
+        }
+    });
+    socket.on('CHANGE_SETTING', (tagValue, tagName) => {
+        try {
+            console.log("The tag value is : " + tagValue.toString());
+            console.log(`The tag name is ${tagName.toString()}`);
+            WriteToDint(PLC, tagName.toString(), tagValue);
+        } catch (error){
             winston.error(error.message);
         }
     });

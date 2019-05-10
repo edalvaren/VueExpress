@@ -6,6 +6,8 @@ const ipAddress = settings.IPAddresses.StructureSupported;
 const scanRate = settings.ScanRate;
 const {AllTags_Names} = require('./TagNames');
 const winston = require ('../config/winston');
+const bus = require('../eventBus');
+
 /**
  *  Main function in this module.
  *       1. Subscribe to tags in TagList imported from TagNames.js
@@ -13,8 +15,6 @@ const winston = require ('../config/winston');
  *       3. Connect to PLC
  *       4. Log PLC Name
  */
-
-
 
 
 
@@ -49,14 +49,12 @@ const InitializePLC = (PLC) => {
 function readAllTagsOnce(group){
         group.forEach(tag=> {
             let thingy = tag.value.toString();
-            console.log(thingy);
         });
 }
 
 const groupTags = (tags, group) => {
     tags.map(tag => {
         group.add(new Tag(tag.toString()));
-        console.log(tag);
     })
 };
 
@@ -64,7 +62,6 @@ const groupAllTags = (tags, group) => {
     return new Promise((resolve, reject) => {
         tags.map(tag => {
             group.add(new Tag(tag.toString()));
-            console.log(tag);
         });
         resolve(group);
     })
