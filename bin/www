@@ -15,7 +15,7 @@ dotenv.config();
  * Get port from environment and index in Express.
  */
 
-var port = normalizePort(process.env.NODE_PORT || '8080');
+var port = normalizePort(process.env.NODE_PORT || '32770');
 app.set('port', port);
 
 /**
