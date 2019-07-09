@@ -48,7 +48,8 @@ const AllTags = {
     TuTorque: {name: 'HMI.Tension_Control.Output_Torque', dataType: REAL},
     Alarm_Register: {name: 'FAULT.Alarm_Register', datatype: DINT},
     CounterAcc: { name: 'new_counter.acc', datatype: DINT },
-    RunBit: {name: 'HMI_Spiral_Run', datatype: BOOL}
+    RunBit: {name: 'HMI_Spiral_Run', datatype: BOOL},
+    TakeupStopDelay: {name: 'HMI_Takeup_Stop_Delay', datatype: DINT},
 
 };
 
@@ -77,7 +78,6 @@ const pickTag = function(arr, valueToMatch){
         _.filter(arr, x => x.name === valueToMatch )
     }
     catch(e) {
-        console.log("There was an error while looking for this tag." + e.message)
     }
 
 };

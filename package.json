@@ -6,29 +6,30 @@
     "start": "nodemon bin/www --exec babel-node --presets babel-preset-env"
   },
   "dependencies": {
-    "app-root-path": "^2.1.0",
-    "cookie-parser": "~1.4.3",
+    "app-root-path": "^2.2.1",
+    "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^7.0.0",
     "ethernet-ip": "^1.2.4",
     "express": "~4.16.0",
-    "express-winston": "^3.1.0",
+    "express-winston": "^3.2.1",
     "http-errors": "~1.6.2",
+    "is-reachable": "^3.1.0",
     "lodash": "^4.17.11",
     "morgan": "~1.9.0",
-    "node-sass-middleware": "^0.11.0",
-    "pug": "2.0.0-beta11",
+    "pug": "^2.0.4",
     "socket.io": "^2.2.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.3",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "^8.0.6",
     "babel-preset-env": "^1.7.0",
     "cors": "^2.8.5",
-    "nodemon": "^1.18.10",
-    "ts-loader": "^5.3.3"
+    "nodemon": "^1.19.1",
+    "ts-loader": "^5.4.5"
   }
 }
