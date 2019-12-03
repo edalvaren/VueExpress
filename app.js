@@ -15,6 +15,7 @@ const winston = require('./config/winston');
 const cors = require('cors');
 const corsOptions = {
   "origin": ["http://localhost:8081", "http://spiralcontrols.com", "http://spiralcontrols.com:8000",
+    "http://172.16.31.104:8080",
     "138.197.69.15", "138.197.69.15:8000", "http://192.168.128.33:8081", "http://localhost:8083", "http://172.16.17.55:8080"],
   "allowedHeaders": "Content-Type,Authorization",
   "credentials": false,
